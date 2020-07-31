@@ -81,14 +81,13 @@ class ShutdownTimer(hass.Hass):
         # The name of the stop event that HA needs to fire to stop a running timer
         self.stop_event = self.args["stop_event"]
         # The HA entities on which the turn_off service will be called
-        self.shutdown_entities = self.args["shutdown_entity"]
+        self.shutdown_entities = self.args["shutdown_entities"]
         # The name of the input_number containing the shutdown time
         self.number_entity = self.args["number_entity"]
         # The name of the sensor displaying the remaining minutes until shutdown
         self.sensor_entity = self.args["sensor_entity"]
 
-        self.check_entities(self.number_entity, self.sensor_entity)
-        self.check_entities(self.shutdown_entities)
+        self.check_entities([self.number_entity, self.sensor_entity]+self.shutdown_entities)
 
         # Register the listeners that call the start_timer and the stop timer function if
         # if the respective events are fired in Home Assistant
@@ -129,7 +128,7 @@ class ShutdownTimer(hass.Hass):
             self.shutdown_counter = shutdown_minutes
             # determine the time of the entity shutdown
             shutdown_time = now + datetime.timedelta(minutes=shutdown_minutes)
-            self.log(f"Shutdown of {self.shutdown_entity} at {shutdown_time}.")
+            self.log(f"Shutdown of {self.shutdown_entities} at {shutdown_time}.")
             # create a new shutdown timer and initially set the sensor displaying the remaining minutes
             self.timer_handle = self.run_at(self.shutdown, shutdown_time)
             self.set_state(self.sensor_entity, state=f"{self.shutdown_counter} min")
@@ -151,7 +150,7 @@ class ShutdownTimer(hass.Hass):
             self.cancel_timer(self.update_countdown_handle)
             self.update_countdown_handle = None
             self.timer_handle = None
-            self.log(f"Shutdown timer of {self.shutdown_entity} stopped.")
+            self.log(f"Shutdown timer of {self.shutdown_entities} stopped.")
 
     def update_countdown(self, *args):
         """
@@ -170,17 +169,16 @@ class ShutdownTimer(hass.Hass):
 
     def shutdown(self, *args):
         for entity in self.shutdown_entities:
-
             self.log(f"Shutting down {entity}.")
             self.turn_off(entity)
 
-    def check_entities(self, *args):
+    def check_entities(self, entities):
         """
         Checks if the passed entities exist in Home Assistant.
         :param args: A list of Strings containing Home Assistant entities
 
         """
-        for entity in args:
+        for entity in entities:
             if not self.entity_exists(entity):
                 self.error(f"Could not find the entity {entity} in HomeAssistant.")
 
