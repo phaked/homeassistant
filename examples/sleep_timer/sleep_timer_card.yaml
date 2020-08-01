@@ -1,0 +1,14 @@
+entities:
+  - entity: sensor.timer
+    name: Timer
+  - entity: input_number.timer
+    name: Minutes
+  - entity: script.start_timer
+    icon: 'mdi:play'
+    name: Start
+  - entity: script.stop_timer
+    icon: 'mdi:stop'
+    name: Stop
+show_header_toggle: false
+type: entities
+title: Sleep timer

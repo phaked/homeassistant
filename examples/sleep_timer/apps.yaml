@@ -1,0 +1,12 @@
+---
+
+sleep_timer:
+  module: shutdown_timer
+  class: ShutdownTimer
+  start_event: start_timer_event
+  stop_event: stop_timer_event
+  shutdown_entities:
+    - switch.bedroom_media_switch
+    - light.bedroom_light
+  number_entity: input_number.timer
+  sensor_entity: sensor.timer

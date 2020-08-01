@@ -15,28 +15,28 @@ class ShutdownTimer(hass.Hass):
         ***************************************
 
         input_number:
-          bedroom_timer:
-          name: Timer
-          initial: 30
-          min: 1
-          max: 240
-          step: 1
+          timer:
+            name: Timer
+            initial: 30
+            min: 1
+            max: 240
+            step: 1
 
         sensor:
           - platform: template
             sensors:
-              bedroom_timer:
+              timer:
                 value_template: 'off'
 
         script:
-          start_bedroom_timer:
+          start_timer:
             sequence:
-            - event: start_bedroom_timer_event
+            - event: start_timer_event
               event_data:
                 state: 'activated'
-          stop_bedroom_timer:
+          stop_timer:
             sequence:
-            - event: stop_bedroom_timer_event
+            - event: stop_timer_event
               event_data:
                 state: 'activated'
 
@@ -45,28 +45,31 @@ class ShutdownTimer(hass.Hass):
         **************************
 
         ---
-        sleep_timer_bedroom:
+
+        sleep_timer:
           module: shutdown_timer
           class: ShutdownTimer
-          start_event: start_bedroom_timer_event
-          stop_event: stop_bedroom_timer_event
+          start_event: start_timer_event
+          stop_event: stop_timer_event
           shutdown_entities:
             - switch.bedroom_media_switch
             - light.bedroom_light
-          number_entity: input_number.bedroom_timer
-          sensor_entity: sensor.bedroom_timer
+          number_entity: input_number.timer
+          sensor_entity: sensor.timer
 
         *******************************
         *  Lovelace UI entities card  *
         *******************************
 
         entities:
-          - entity: sensor.bedroom_timer
-          - entity: input_number.bedroom_timer
-          - entity: script.start_bedroom_timer
+          - entity: sensor.timer
+            name: Timer
+          - entity: input_number.timer
+            name: Minutes
+          - entity: script.start_timer
             icon: 'mdi:play'
             name: Start
-          - entity: script.stop_bedroom_timer
+          - entity: script.stop_timer
             icon: 'mdi:stop'
             name: Stop
         show_header_toggle: false
@@ -180,5 +183,5 @@ class ShutdownTimer(hass.Hass):
         """
         for entity in entities:
             if not self.entity_exists(entity):
-                self.error(f"Could not find the entity {entity} in HomeAssistant.")
+                self.error(f"Could not find the entity {entity} in Home Assistant.")
 

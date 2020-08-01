@@ -1,0 +1,25 @@
+input_number:
+  timer:
+    name: Timer
+    initial: 30
+    min: 1
+    max: 240
+    step: 1
+
+sensor:
+  - platform: template
+    sensors:
+      timer:
+        value_template: 'off'
+
+script:
+  start_timer:
+    sequence:
+    - event: start_timer_event
+      event_data:
+        state: 'activated'
+  stop_timer:
+    sequence:
+    - event: stop_timer_event
+      event_data:
+        state: 'activated'
